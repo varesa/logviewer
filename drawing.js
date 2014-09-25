@@ -56,18 +56,18 @@ function drawData(context) {
         devices[name].push(time);
     }
 
-    ypos = topbarHeight + 32;
+    ypos = topbarHeight + 64;
 
     for(var key in devices) {
         context.font = "20px sans-serif";
         context.textAlign = "left";
-        context.fillText(key, 0, ypos);
+        context.fillText(key, 0, ypos-10);
         console.log(key);
 
         for(var i = 0; i < devices[key].length; i++) {
             var value = parseInt(devices[key][i]);
             if(screenBegin < value && value < screenEnd) {
-                var xpos = ((value-screenBegin)/(screenEnd-screenBegin)) * (canvasWidth-2*graphMargin);
+                var xpos = graphMargin + ((value-screenBegin)/(screenEnd-screenBegin)) * (canvasWidth-2*graphMargin);
                 context.fillRect(xpos-2.5, ypos-2.5, 5, 5);
             }
         }
@@ -78,31 +78,60 @@ function drawData(context) {
 }
 
 function drawScale(context) {
-    var beginDate = new Date(screenBegin*1000);
-    var endDate = new Date(screenEnd*1000);
+    var dateBegin = new Date(screenBegin*1000);
+    var dateEnd = new Date(screenEnd*1000);
 
-    var scaleBegin = new Date(beginDate);
-    scaleBegin.setMinutes(0);
+    var scaleBegin = new Date(dateBegin);
+    //scaleBegin.setMinutes(0);
     scaleBegin.setSeconds(0);
 
-    var scaleEnd = new Date(endDate);
-    scaleEnd.setHours(scaleEnd.getHours()+1);
-    scaleEnd.setMinutes(0);
+    var scaleEnd = new Date(dateEnd);
+    //scaleEnd.setHours(scaleEnd.getHours()+1);
+    //scaleEnd.setMinutes(0);
     scaleEnd.setSeconds(0);
 
     var timeDiff = (scaleEnd - scaleBegin)/1000;
 
     var xspace = canvasWidth - 2*graphMargin;
+
+    //var scaleTimeOffset = (dateBegin - scaleBegin)/1000;
+    //var scalePosOffset = xspace * (scaleTimeOffset/timeDiff);
+
+
     var timepos = 0;
 
-    while(timepos <= timeDiff) {
-        var xpos = graphMargin + xspace * (timepos/timeDiff);
-        context.beginPath();
-        context.moveTo(xpos, ypos);
-        context.lineTo(xpos, ypos + 10);
-        context.stroke();
+    var xposOld;
+    var labelSpacing = 1;
 
-        timepos += 3600;
+    while(timepos <= timeDiff) {
+        if((screenBegin + timepos) >= logBegin && (screenBegin + timepos) <= logEnd) {
+            var xpos = graphMargin + xspace * (timepos/timeDiff);
+            if(xposOld && xpos-xposOld < 40) {
+                labelSpacing = 12;
+            }
+
+            var time = new Date((screenBegin + timepos)*1000);
+            if(time.getMinutes() == 0) {
+                context.beginPath();
+                context.moveTo(xpos, ypos);
+                context.lineTo(xpos, ypos + 10);
+                context.stroke();
+
+                if(labelSpacing == 1 ||  (labelSpacing == 12 && (time.getHours() == 0 || time.getHours() == 12)) ) {
+                    var hourLabel = ("0"+time.getHours()).slice(-2);
+                    var labelWidth = context.measureText(hourLabel).width;
+                    context.fillText(hourLabel, xpos-labelWidth/2, ypos + 32);
+                }
+
+                if(time.getHours() == 0) {
+                    var dateLabel = time.getDay() + "." + time.getMonth();
+                    var labelWidth = context.measureText(dateLabel).width;
+                    context.fillText(dateLabel, xpos-labelWidth/2, ypos + 64);
+                }
+            }
+        }
+        timepos += 60;
+        xposOld = xpos;
     }
 }
 

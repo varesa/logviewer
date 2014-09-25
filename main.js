@@ -42,6 +42,9 @@ var canvasHeight;
 
 var graphMargin = 48;
 
+var mouseLastX;
+var mouseIsDown = false;
+
 
 /* "Main" */
 
@@ -55,18 +58,40 @@ $(document).ready(function() {
         var x = e.offsetX;
         var y = e.offsetY;
 
-        if(0 < x && x < topbarButtonWidth && 0 < y && y < topbarHeight) {
-            setLog(getPrevLogName(currentLogName));
-        }
+        if(0 < y && y < topbarHeight) {
+            if(0 < x && x < topbarButtonWidth) {
+                setLog(getPrevLogName(currentLogName));
+            }
 
-        if(canvasWidth - topbarButtonWidth < x && x < canvasWidth && 0 < y && y < topbarHeight) {
-            setLog(getNextLogName(currentLogName));
+            if(canvasWidth - topbarButtonWidth < x && x < canvasWidth) {
+                setLog(getNextLogName(currentLogName));
+            }
+        } else {
+            mouseIsDown = true;
         }
+    });
+
+    $("#canv").mouseup(function() {
+        mouseIsDown = false;
+    });
+
+    $("#canv").mousemove(function (e) {
+        if(mouseIsDown) {
+            var deltaX = e.offsetX - mouseLastX;
+            var movementPercentage = deltaX / (canvasWidth - 2*graphMargin);
+            var movementTime = movementPercentage * (screenEnd - screenBegin);
+            screenBegin -= movementTime;
+            screenEnd -= movementTime;
+        }
+        mouseLastX = e.offsetX;
     });
 
     $("#canv").mousewheel(function(e) {
         var currentScaleFactor = (screenEnd-screenBegin)/(logEnd-logBegin);
         var newScaleFactor = currentScaleFactor * (1 - e.deltaY/100);
+
+        if (newScaleFactor > 1.25) newScaleFactor = 1.25;
+        if (newScaleFactor < 0.05) newScaleFactor = 0.05;
 
         var newScreenRange = (logEnd-logBegin) * newScaleFactor;
 
