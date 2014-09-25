@@ -74,7 +74,6 @@ function drawData(context) {
         context.font = "20px sans-serif";
         context.textAlign = "left";
         context.fillText(key, 0, ypos-10);
-        console.log(key);
 
         for(var i = 0; i < devices[key].length; i++) {
             var value = parseInt(devices[key][i]);
@@ -100,7 +99,7 @@ function drawScale(context) {
     while(timepos <= timeDiff) {
         if((screenBegin + timepos) >= logBegin && (screenBegin + timepos) <= logEnd) {
             var xpos = graphMargin + xspace * (timepos/timeDiff);
-            if(xposOld && xpos-xposOld < 40) {
+            if(xposOld && xpos-xposOld < 0.8) {
                 labelSpacing = 12;
             }
 
