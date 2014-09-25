@@ -11,7 +11,7 @@ var FPS = 30;
 
 var topbarHeight = 64;
 var buttonTextMargin = 16;
-var topbarButtonWidth = 512;
+var topbarButtonWidth = 300;
 
 /* Constants (do not touch) */
 
@@ -59,11 +59,11 @@ $(document).ready(function() {
         var y = e.offsetY;
 
         if(0 < y && y < topbarHeight) {
-            if(0 < x && x < topbarButtonWidth) {
+            if(0 < x && x < topbarButtonWidth && prevLogName) {
                 setLog(getPrevLogName(currentLogName));
             }
 
-            if(canvasWidth - topbarButtonWidth < x && x < canvasWidth) {
+            if(canvasWidth - topbarButtonWidth < x && x < canvasWidth && nextLogName) {
                 setLog(getNextLogName(currentLogName));
             }
         } else {

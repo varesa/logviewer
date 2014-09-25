@@ -9,11 +9,23 @@ function createContext(canvas){
 }
 
 function drawTopbar(context) {
-// Top separator line
+    // Top separator line
     context.beginPath();
     context.moveTo(0, topbarHeight);
     context.lineTo(canvasWidth, topbarHeight);
     context.stroke();
+
+    // Button vertical lines
+    context.beginPath();
+    context.moveTo(topbarButtonWidth, 0);
+    context.lineTo(topbarButtonWidth, topbarHeight);
+    context.stroke();
+
+    context.beginPath();
+    context.moveTo(canvasWidth-topbarButtonWidth, 0);
+    context.lineTo(canvasWidth-topbarButtonWidth, topbarHeight);
+    context.stroke();
+
 
     // Loading
     if (loading) {
@@ -78,28 +90,10 @@ function drawData(context) {
 }
 
 function drawScale(context) {
-    var dateBegin = new Date(screenBegin*1000);
-    var dateEnd = new Date(screenEnd*1000);
-
-    var scaleBegin = new Date(dateBegin);
-    //scaleBegin.setMinutes(0);
-    scaleBegin.setSeconds(0);
-
-    var scaleEnd = new Date(dateEnd);
-    //scaleEnd.setHours(scaleEnd.getHours()+1);
-    //scaleEnd.setMinutes(0);
-    scaleEnd.setSeconds(0);
-
-    var timeDiff = (scaleEnd - scaleBegin)/1000;
-
+    var timeDiff = (screenEnd - screenBegin);
     var xspace = canvasWidth - 2*graphMargin;
 
-    //var scaleTimeOffset = (dateBegin - scaleBegin)/1000;
-    //var scalePosOffset = xspace * (scaleTimeOffset/timeDiff);
-
-
     var timepos = 0;
-
     var xposOld;
     var labelSpacing = 1;
 
@@ -134,7 +128,6 @@ function drawScale(context) {
         xposOld = xpos;
     }
 }
-
 
 function draw(){
     var canvas = $("#canv");
