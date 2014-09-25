@@ -40,7 +40,7 @@ var screenEnd;
 var canvasWidth;
 var canvasHeight;
 
-var graphMargin = 32;
+var graphMargin = 48;
 
 
 /* "Main" */
@@ -63,5 +63,21 @@ $(document).ready(function() {
             setLog(getNextLogName(currentLogName));
         }
     });
+
+    $("#canv").mousewheel(function(e) {
+        var currentScaleFactor = (screenEnd-screenBegin)/(logEnd-logBegin);
+        var newScaleFactor = currentScaleFactor * (1 - e.deltaY/100);
+
+        var newScreenRange = (logEnd-logBegin) * newScaleFactor;
+
+        var graphWidth = canvasWidth - 2 * graphMargin;
+        var graphMouseX = e.offsetX - graphMargin;
+        var mouseCursorTime = screenBegin + (graphMouseX/graphWidth) * (screenEnd - screenBegin);
+
+        var newMouseTimeOffset = newScreenRange * (graphMouseX/graphWidth);
+
+        screenBegin = mouseCursorTime - newMouseTimeOffset;
+        screenEnd = screenBegin+newScreenRange;
+    })
 })
 

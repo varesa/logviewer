@@ -41,6 +41,42 @@ function drawTopbar(context) {
     }
 }
 
+var ypos;
+
+function drawData(context) {
+    var logArray = currentLogContents.trim().split("\n");
+    var devices = {};
+    for(var i = 0; i < logArray.length; i++) {
+        var name = logArray[i].split(": ")[0];
+        var time = logArray[i].split(": ")[1];
+
+        if(devices[name] === undefined) {
+            devices[name] = [];
+        }
+        devices[name].push(time);
+    }
+
+    ypos = topbarHeight + 32;
+
+    for(var key in devices) {
+        context.font = "20px sans-serif";
+        context.textAlign = "left";
+        context.fillText(key, 0, ypos);
+        console.log(key);
+
+        for(var i = 0; i < devices[key].length; i++) {
+            var value = parseInt(devices[key][i]);
+            if(screenBegin < value && value < screenEnd) {
+                var xpos = ((value-screenBegin)/(screenEnd-screenBegin)) * (canvasWidth-2*graphMargin);
+                context.fillRect(xpos-2.5, ypos-2.5, 5, 5);
+            }
+        }
+
+
+        ypos += 64;
+    }
+}
+
 function drawScale(context) {
     var beginDate = new Date(screenBegin*1000);
     var endDate = new Date(screenEnd*1000);
@@ -62,13 +98,14 @@ function drawScale(context) {
     while(timepos <= timeDiff) {
         var xpos = graphMargin + xspace * (timepos/timeDiff);
         context.beginPath();
-        context.moveTo(xpos, 300);
-        context.lineTo(xpos, 316);
+        context.moveTo(xpos, ypos);
+        context.lineTo(xpos, ypos + 10);
         context.stroke();
 
         timepos += 3600;
     }
 }
+
 
 function draw(){
     var canvas = $("#canv");
@@ -82,6 +119,7 @@ function draw(){
 
     drawTopbar(context);
     if(!loading) {
+        drawData(context);
         drawScale(context);
     }
 }
