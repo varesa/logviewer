@@ -117,7 +117,7 @@ function drawScale(context) {
                 }
 
                 if(time.getHours() == 0) {
-                    var dateLabel = time.getDay() + "." + time.getMonth();
+                    var dateLabel = time.getDate() + "." + (time.getMonth()+1);
                     var labelWidth = context.measureText(dateLabel).width;
                     context.fillText(dateLabel, xpos-labelWidth/2, ypos + 64);
                 }
