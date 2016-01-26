@@ -4,7 +4,7 @@
 
 /* Properties */
 
-var logsUrl = "http://webroot.finbit.dy.fi/nastori_logs/"
+var logsUrl = "http://nastori.esav.fi/logs/"
 var logSuffix = ".log"
 
 var FPS = 30;
