@@ -4,7 +4,7 @@
 
 /* Properties */
 
-var logsUrl = "http://nastori.esav.fi/logs/"
+var logsUrl = "/logs/"
 var logSuffix = ".log"
 
 var FPS = 30;
